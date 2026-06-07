@@ -98,7 +98,6 @@ body {
   width: 100%;
   max-width: none;
   margin: 0 auto;
-  padding: 30px 4vw 90px;
 }
 
 
@@ -185,7 +184,6 @@ nav {
    Its background color (--deep) is set per planet by JS.
    ------------------------------------------------------------ */
 .page {
-  margin-top: 30px;
   border-radius: 26px;
   overflow: hidden;
   background: var(--deep);
