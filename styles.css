@@ -163,6 +163,16 @@ nav {
   background: rgba(255, 255, 255, .06);
 }
 
+/* Home button always has a warm golden tint to stand out */
+.nav-links button[data-key="Home"] {
+  color: #f0b832;
+  font-weight: 600;
+}
+.nav-links button[data-key="Home"]:hover {
+  color: #f5d070;
+  background: rgba(240, 184, 50, .10);
+}
+
 /* Active button gets a glowing accent underline */
 .nav-links button.active { color: #fff; }
 .nav-links button.active::after {

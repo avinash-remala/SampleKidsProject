@@ -57,11 +57,11 @@ const PLANETS = {
 
   /* ---- Home screen (shown when you click the logo) ---- */
   Home: {
-    accent: '#8aa6ff',
-    a2:     '#b4c6ff',
-    hero:   '#324a9e',
-    deep:   '#0c1330',
-    grad:   'radial-gradient(circle at 35% 30%, #ffd27a, #d98026 42%, #5e3410 100%)',
+    accent: '#e0e0e0',
+    a2:     '#ffffff',
+    hero:   '#1a1a1a',
+    deep:   '#0a0a0a',
+    grad:   'radial-gradient(circle at 35% 30%, #555555, #1a1a1a 55%, #000000 100%)',
     badge:  'Explore the Solar System',
     lede:   'A journey through the eight worlds orbiting our Sun. Pick a planet above to begin.',
     stats: [
