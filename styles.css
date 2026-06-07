@@ -1,68 +1,53 @@
 /* ============================================================
    SOLAR SYSTEM EXPLORER  —  styles.css
 
-   This file controls how everything looks.
-   It is split into clearly labelled sections so you can jump
-   straight to the part you want to change.
-
    Sections:
-     1.  CSS Variables  (color slots that update per planet)
+     1.  CSS Variables  (color slots, start as Earth's colors)
      2.  Reset & base
      3.  Starfield background
      4.  Navigation bar
-     5.  Page card (the big themed container)
-     6.  Hero (title, planet ball, explore button)
-     7.  Stats bar (four key facts)
-     8.  Content blocks (overview, features, fun fact)
-     9.  Reveal animation
-     10. Responsive (smaller screens)
+     5.  Page card
+     6.  Hero section
+     7.  Stats bar
+     8.  Content blocks
+     9.  Responsive
+     10. Radio switch system  ← the magic that replaces JavaScript!
    ============================================================ */
 
 
 /* ------------------------------------------------------------
    1. CSS VARIABLES
-   These are like named color slots. JavaScript (script.js)
-   swaps them out every time you pick a different planet, and
-   every element that uses them updates automatically.
+   Named color slots. They start as Earth's colors.
+   Section 10 swaps them out when you click a planet label.
    ------------------------------------------------------------ */
 :root {
-  --accent:      #5fa0ff;                       /* main highlight color          */
-  --accent-2:    #8bbcff;                       /* lighter version of accent     */
-  --accent-soft: rgba(95, 160, 255, .16);       /* very transparent accent       */
-  --hero:        #1d4ed8;                       /* bright zone color in the card */
-  --deep:        #0c1838;                       /* dark base color of the card   */
-  --stat-bg:     rgba(29, 78, 216, .40);        /* stats bar background          */
+  --accent:      #5fa0ff;
+  --accent-2:    #8bbcff;
+  --accent-soft: rgba(95, 160, 255, .16);
+  --hero:        #1d4ed8;
+  --deep:        #0c1838;
+  --stat-bg:     rgba(29, 78, 216, .40);
   --planet-grad: radial-gradient(circle at 35% 30%, #7fb2ff, #1d4ed8 55%, #0a1f4d 100%);
-  --ring: 0;
 
-  --ink:   #f1f5ff;                             /* main text color (near white)  */
-  --muted: rgba(241, 245, 255, .66);            /* dimmer text color             */
-  --line:  rgba(255, 255, 255, .10);            /* subtle border color           */
-  --t:     .6s cubic-bezier(.4, 0, .2, 1);     /* standard transition duration  */
+  --ink:   #f1f5ff;
+  --muted: rgba(241, 245, 255, .66);
+  --line:  rgba(255, 255, 255, .10);
+  --t:     .6s cubic-bezier(.4, 0, .2, 1);
 }
 
 
 /* ------------------------------------------------------------
-   2. RESET & BASE STYLES
-   Removes default browser spacing and sets the page font.
+   2. RESET & BASE
    ------------------------------------------------------------ */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Outfit', sans-serif;
   color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
-
-  /* Deep space gradient — stays fixed while you scroll */
   background:
     radial-gradient(1200px 820px at 50% -12%, #2b3548 0%, transparent 60%),
     linear-gradient(160deg, #1b2233 0%, #12161f 52%, #090c12 100%);
@@ -72,8 +57,6 @@ body {
 
 /* ------------------------------------------------------------
    3. STARFIELD
-   A fixed layer of tiny dot "stars" behind everything.
-   pointer-events: none means you can still click through it.
    ------------------------------------------------------------ */
 .stars {
   position: fixed;
@@ -91,19 +74,19 @@ body {
     radial-gradient(1.4px 1.4px at 50% 35%, rgba(255,255,255,.55), transparent);
 }
 
-/* Page content sits above the starfield */
 .wrap {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: none;
   margin: 0 auto;
+  padding: 30px 4vw 90px;
 }
 
 
 /* ------------------------------------------------------------
    4. NAVIGATION BAR
-   Sticky at the top — blurs the content behind it.
+   Nav items are <label> elements tied to hidden radio buttons.
+   Clicking a label checks its radio, which triggers section 10.
    ------------------------------------------------------------ */
 nav {
   position: sticky;
@@ -118,7 +101,7 @@ nav {
   border-bottom: 1px solid var(--line);
 }
 
-/* The planet-logo icon on the left side of the nav */
+/* Logo — a <label for="r-home"> so clicking it goes to the Home page */
 .logo {
   display: grid;
   place-items: center;
@@ -135,7 +118,6 @@ nav {
 }
 .logo svg { width: 19px; height: 19px; }
 
-/* Row of planet-name buttons */
 .nav-links {
   display: flex;
   gap: 2px;
@@ -143,7 +125,8 @@ nav {
   flex: 1;
 }
 
-.nav-links button {
+/* Labels look exactly like the old buttons */
+.nav-links label {
   font-family: inherit;
   font-size: 14.5px;
   font-weight: 500;
@@ -158,42 +141,29 @@ nav {
   transition: .22s;
 }
 
-.nav-links button:hover {
+.nav-links label:hover {
   color: var(--ink);
   background: rgba(255, 255, 255, .06);
 }
 
-/* Home button always has a warm golden tint to stand out */
-.nav-links button[data-key="Home"] {
+/* Home label has a warm golden tint to stand out */
+.nav-links label[for="r-home"] {
   color: #f0b832;
   font-weight: 600;
 }
-.nav-links button[data-key="Home"]:hover {
+.nav-links label[for="r-home"]:hover {
   color: #f5d070;
   background: rgba(240, 184, 50, .10);
-}
-
-/* Active button gets a glowing accent underline */
-.nav-links button.active { color: #fff; }
-.nav-links button.active::after {
-  content: "";
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 1px;
-  height: 2.5px;
-  border-radius: 3px;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
 }
 
 
 /* ------------------------------------------------------------
    5. PAGE CARD
-   The big rounded card that holds all the planet content.
-   Its background color (--deep) is set per planet by JS.
+   All pages are hidden by default (display: none).
+   Section 10 reveals the one whose radio is checked.
    ------------------------------------------------------------ */
 .page {
+  display: none;
   border-radius: 26px;
   overflow: hidden;
   background: var(--deep);
@@ -201,13 +171,11 @@ nav {
   box-shadow:
     0 40px 90px -40px rgba(0, 0, 0, .8),
     inset 0 0 0 1px rgba(255, 255, 255, .03);
-  transition: background var(--t);
 }
 
 
 /* ------------------------------------------------------------
    6. HERO SECTION
-   Two-column layout: text on the left, floating planet on the right.
    ------------------------------------------------------------ */
 .hero {
   position: relative;
@@ -216,15 +184,11 @@ nav {
   align-items: center;
   gap: 26px;
   padding: 54px clamp(22px, 4vw, 60px) 30px;
-
-  /* Bright themed gradient that fades into the dark card below */
   background:
     radial-gradient(820px 460px at 86% 4%, var(--hero), transparent 62%),
     linear-gradient(172deg, var(--hero) 0%, var(--deep) 78%);
-  transition: background var(--t);
 }
 
-/* Subtle white sheen across the very top of the hero */
 .hero::after {
   content: "";
   position: absolute;
@@ -235,7 +199,6 @@ nav {
 
 .hero-copy { position: relative; z-index: 2; }
 
-/* Small rounded pill label above the title (e.g. "THE BLUE PLANET") */
 .badge {
   display: inline-block;
   font-size: 12px;
@@ -251,7 +214,6 @@ nav {
   backdrop-filter: blur(4px);
 }
 
-/* Big planet name — scales between 52px (mobile) and 96px (desktop) */
 h1 {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 800;
@@ -262,7 +224,6 @@ h1 {
   text-shadow: 0 6px 40px rgba(0,0,0,.45), 0 0 60px var(--accent-soft);
 }
 
-/* One-line description below the title */
 .lede {
   font-size: 19px;
   color: rgba(255, 255, 255, .86);
@@ -271,7 +232,7 @@ h1 {
   line-height: 1.5;
 }
 
-/* "Explore →" button */
+/* The Explore button is an <a> tag now — no JS scroll needed, just an anchor link */
 .btn {
   font-family: inherit;
   font-size: 15px;
@@ -283,6 +244,7 @@ h1 {
   padding: 13px 26px;
   border-radius: 12px;
   color: #fff;
+  text-decoration: none;
   border: 1px solid rgba(255, 255, 255, .4);
   background: rgba(255, 255, 255, .12);
   backdrop-filter: blur(6px);
@@ -295,9 +257,8 @@ h1 {
   box-shadow: 0 14px 34px var(--accent-soft);
 }
 .btn span       { transition: .24s; }
-.btn:hover span { transform: translateX(5px); } /* arrow slides right on hover */
+.btn:hover span { transform: translateX(5px); }
 
-/* Container that centres the 3D-looking planet sphere */
 .planet-stage {
   position: relative;
   display: grid;
@@ -306,22 +267,19 @@ h1 {
   z-index: 2;
 }
 
-/* The planet ball */
 .planet {
   width: 290px;
   height: 290px;
   border-radius: 50%;
   background: var(--planet-grad);
   position: relative;
-  /* Outer glow + inner shadow to look 3D */
   box-shadow:
     0 0 90px -10px var(--accent),
     inset -34px -26px 70px rgba(0, 0, 0, .6);
   animation: float 7s ease-in-out infinite;
-  transition: background var(--t);
 }
 
-/* Ring decoration for Saturn and Uranus (drawn with a ::before pseudo-element) */
+/* Ring decoration — added directly in HTML for Saturn and Uranus */
 .planet.ringed::before {
   content: "";
   position: absolute;
@@ -332,7 +290,6 @@ h1 {
   box-shadow: 0 0 36px rgba(255, 255, 255, .14);
 }
 
-/* Gentle up-and-down floating animation */
 @keyframes float {
   0%, 100% { transform: translateY(-12px); }
   50%       { transform: translateY( 12px); }
@@ -341,8 +298,6 @@ h1 {
 
 /* ------------------------------------------------------------
    7. STATS BAR
-   Four key facts in a row, sitting just below the hero.
-   The negative top margin makes it slightly overlap the hero above.
    ------------------------------------------------------------ */
 .stats {
   position: relative;
@@ -356,10 +311,8 @@ h1 {
   border: 1px solid rgba(255, 255, 255, .16);
   box-shadow: 0 18px 40px -20px rgba(0, 0, 0, .7);
   backdrop-filter: blur(6px);
-  transition: background var(--t);
 }
 
-/* Each individual stat cell */
 .stat {
   padding: 22px 16px;
   text-align: center;
@@ -367,20 +320,17 @@ h1 {
 }
 .stat:last-child { border-right: none; }
 
-.stat .ico     { width: 30px; height: 30px; margin: 0 auto 10px; color: #fff; opacity: .95; }
-.stat .ico svg { width: 100%; height: 100%; }
-.stat .lbl     { font-size: 11.5px; letter-spacing: .5px; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 6px; }
-.stat .val     { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; font-weight: 700; color: #fff; }
+.stat .ico  { margin: 0 auto 10px; font-size: 22px; line-height: 1.4; text-align: center; }
+.stat .lbl  { font-size: 11.5px; letter-spacing: .5px; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 6px; }
+.stat .val  { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; font-weight: 700; color: #fff; }
 
 
 /* ------------------------------------------------------------
-   8. CONTENT BLOCKS (overview, features, fun fact)
-   Each is wrapped in a .block div inside the page card.
+   8. CONTENT BLOCKS
    ------------------------------------------------------------ */
 .block            { padding: 34px clamp(22px, 4vw, 60px) 4px; }
 .block:last-child { padding-bottom: 46px; }
 
-/* Section heading like "OVERVIEW", "FEATURES", "FUN FACT" */
 .block-title {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 700;
@@ -391,11 +341,9 @@ h1 {
   margin-bottom: 18px;
 }
 
-/* Overview: paragraph on the left, terrain image on the right */
 .overview   { display: grid; grid-template-columns: 1.35fr 1fr; gap: 30px; align-items: center; }
 .overview p { color: rgba(255,255,255,.78); font-size: 17px; line-height: 1.65; }
 
-/* Decorative "terrain" image — built entirely from CSS gradients */
 .ov-img {
   height: 200px;
   border-radius: 16px;
@@ -406,13 +354,10 @@ h1 {
     linear-gradient(180deg, rgba(0,0,0,.25), transparent 38%),
     linear-gradient(180deg, var(--hero) 0%, var(--hero) 52%, rgba(0,0,0,.45) 53%, var(--deep) 100%);
   box-shadow: inset 0 -50px 70px rgba(0,0,0,.45);
-  transition: background var(--t);
 }
 
-/* Features: responsive grid of four cards */
 .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
 
-/* Each feature card */
 .feat .fico {
   width: 56px;
   height: 56px;
@@ -420,15 +365,13 @@ h1 {
   display: grid;
   place-items: center;
   margin-bottom: 14px;
-  color: var(--accent-2);
+  font-size: 26px;
   background: var(--accent-soft);
   border: 1px solid rgba(255, 255, 255, .14);
 }
-.feat .fico svg { width: 25px; height: 25px; }
 .feat h4 { font-size: 13.5px; letter-spacing: .4px; text-transform: uppercase; color: var(--accent-2); margin-bottom: 8px; line-height: 1.3; }
 .feat p  { font-size: 14px; color: rgba(255,255,255,.66); line-height: 1.5; }
 
-/* Fun fact box */
 .funfact {
   display: flex;
   align-items: center;
@@ -440,7 +383,6 @@ h1 {
 }
 .funfact p { flex: 1; font-size: 17px; color: rgba(255,255,255,.9); }
 
-/* Tiny planet ball inside the fun fact box */
 .mini-planet {
   width: 58px;
   height: 58px;
@@ -452,43 +394,153 @@ h1 {
 
 
 /* ------------------------------------------------------------
-   9. REVEAL ANIMATION
-   Sections fade upwards into view when you switch planets.
-   JS adds the 'anim' class and staggers the delay per section.
-   ------------------------------------------------------------ */
-.anim {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: rise .6s cubic-bezier(.2, .7, .2, 1) forwards;
-}
-@keyframes rise {
-  to { opacity: 1; transform: none; }
-}
-
-
-/* ------------------------------------------------------------
-   10. RESPONSIVE — phones and small tablets (880px and below)
-   Layout shifts to a single column so everything still fits.
+   9. RESPONSIVE — phones and small tablets
    ------------------------------------------------------------ */
 @media (max-width: 880px) {
-  /* Stack hero sections vertically and center them */
   .hero      { grid-template-columns: 1fr; padding: 40px 28px 24px; text-align: center; }
   .hero-copy { display: flex; flex-direction: column; align-items: center; }
 
-  /* Planet appears above the text on mobile */
   .planet-stage { order: -1; min-height: 230px; }
   .planet       { width: 210px; height: 210px; }
 
-  /* Stats switch from 4 columns to a 2×2 grid */
   .stats { grid-template-columns: repeat(2, 1fr); margin: -6px 20px 0; }
-  .stat:nth-child(2)                    { border-right: none; }
+  .stat:nth-child(2)                     { border-right: none; }
   .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,.14); }
 
   .block    { padding: 28px 26px 4px; }
-  .overview { grid-template-columns: 1fr; }           /* overview stacks vertically */
+  .overview { grid-template-columns: 1fr; }
   .features { grid-template-columns: repeat(2, 1fr); }
 
-  /* Nav scrolls sideways on small screens instead of wrapping */
-  .nav-links        { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
-  .nav-links button { white-space: nowrap; }
+  .nav-links       { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .nav-links label { white-space: nowrap; }
+}
+
+
+/* ============================================================
+   10. RADIO SWITCH SYSTEM  —  replaces all JavaScript!
+
+   HOW IT WORKS:
+   • index.html has 9 hidden <input type="radio"> at the top
+   • Each nav <label> has a "for" attribute pointing to one radio
+   • Clicking a label checks that radio (invisible, but real)
+   • CSS can detect which radio is checked with :checked
+   • The ~ selector ("general sibling") reaches forward in the
+     HTML to find .app and change colors/show the right page
+   ============================================================ */
+
+/* Step 1 — make radio inputs completely invisible */
+input[name="planet"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Step 2 — show only the planet page whose radio is checked */
+#r-home:checked     ~ .app .wrap #p-home     { display: block; }
+#r-mercury:checked  ~ .app .wrap #p-mercury  { display: block; }
+#r-venus:checked    ~ .app .wrap #p-venus    { display: block; }
+#r-earth:checked    ~ .app .wrap #p-earth    { display: block; }
+#r-mars:checked     ~ .app .wrap #p-mars     { display: block; }
+#r-jupiter:checked  ~ .app .wrap #p-jupiter  { display: block; }
+#r-saturn:checked   ~ .app .wrap #p-saturn   { display: block; }
+#r-uranus:checked   ~ .app .wrap #p-uranus   { display: block; }
+#r-neptune:checked  ~ .app .wrap #p-neptune  { display: block; }
+
+/* Step 3 — highlight the active nav label */
+#r-home:checked     ~ .app label[for="r-home"],
+#r-mercury:checked  ~ .app label[for="r-mercury"],
+#r-venus:checked    ~ .app label[for="r-venus"],
+#r-earth:checked    ~ .app label[for="r-earth"],
+#r-mars:checked     ~ .app label[for="r-mars"],
+#r-jupiter:checked  ~ .app label[for="r-jupiter"],
+#r-saturn:checked   ~ .app label[for="r-saturn"],
+#r-uranus:checked   ~ .app label[for="r-uranus"],
+#r-neptune:checked  ~ .app label[for="r-neptune"] { color: #fff; }
+
+/* Glowing underline on active label */
+#r-home:checked     ~ .app label[for="r-home"]::after,
+#r-mercury:checked  ~ .app label[for="r-mercury"]::after,
+#r-venus:checked    ~ .app label[for="r-venus"]::after,
+#r-earth:checked    ~ .app label[for="r-earth"]::after,
+#r-mars:checked     ~ .app label[for="r-mars"]::after,
+#r-jupiter:checked  ~ .app label[for="r-jupiter"]::after,
+#r-saturn:checked   ~ .app label[for="r-saturn"]::after,
+#r-uranus:checked   ~ .app label[for="r-uranus"]::after,
+#r-neptune:checked  ~ .app label[for="r-neptune"]::after {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; bottom: 1px;
+  height: 2.5px;
+  border-radius: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* Step 4 — change the color theme for the whole page */
+/* Each block sets the CSS variables on .app, which cascade to everything inside */
+
+#r-home:checked ~ .app {
+  --accent: #e0e0e0; --accent-2: #ffffff;
+  --accent-soft: rgba(224,224,224,.18);
+  --hero: #1a1a1a; --deep: #0a0a0a;
+  --stat-bg: rgba(26,26,26,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #555, #1a1a1a 55%, #000 100%);
+}
+#r-mercury:checked ~ .app {
+  --accent: #cfc9bd; --accent-2: #e4ded2;
+  --accent-soft: rgba(207,201,189,.18);
+  --hero: #4a4a52; --deep: #141418;
+  --stat-bg: rgba(74,74,82,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #c9c2b4, #7c756a 55%, #2c2925 100%);
+}
+#r-venus:checked ~ .app {
+  --accent: #f0b44a; --accent-2: #f8cd7a;
+  --accent-soft: rgba(240,180,74,.18);
+  --hero: #b9701a; --deep: #3f2607;
+  --stat-bg: rgba(185,112,26,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #ffd27a, #d98026 55%, #5e3410 100%);
+}
+#r-earth:checked ~ .app {
+  --accent: #5fa0ff; --accent-2: #8bbcff;
+  --accent-soft: rgba(95,160,255,.18);
+  --hero: #1d4ed8; --deep: #0c1838;
+  --stat-bg: rgba(29,78,216,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #7fb2ff, #1d4ed8 55%, #0a1f4d 100%);
+}
+#r-mars:checked ~ .app {
+  --accent: #ff7a55; --accent-2: #ff9b7d;
+  --accent-soft: rgba(255,122,85,.18);
+  --hero: #a83a1e; --deep: #34100a;
+  --stat-bg: rgba(168,58,30,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #f0876a, #b13c1e 55%, #4a1408 100%);
+}
+#r-jupiter:checked ~ .app {
+  --accent: #e0b67e; --accent-2: #eccfa3;
+  --accent-soft: rgba(224,182,126,.18);
+  --hero: #9c6b38; --deep: #2e1c0c;
+  --stat-bg: rgba(156,107,56,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #e8c89a, #b07c45 55%, #5a3a1c 100%);
+}
+#r-saturn:checked ~ .app {
+  --accent: #f0d77a; --accent-2: #f6e5a4;
+  --accent-soft: rgba(240,215,122,.18);
+  --hero: #b09030; --deep: #2e240c;
+  --stat-bg: rgba(176,144,48,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #f6e3a4, #c9a64e 55%, #6b5220 100%);
+}
+#r-uranus:checked ~ .app {
+  --accent: #8be4e8; --accent-2: #b3eff2;
+  --accent-soft: rgba(139,228,232,.18);
+  --hero: #2f9aa0; --deep: #0c3033;
+  --stat-bg: rgba(47,154,160,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #aef0f2, #45b8bd 55%, #144a4d 100%);
+}
+#r-neptune:checked ~ .app {
+  --accent: #7d9ff0; --accent-2: #a9c0ff;
+  --accent-soft: rgba(125,159,240,.18);
+  --hero: #2a44a8; --deep: #0a1238;
+  --stat-bg: rgba(42,68,168,.45);
+  --planet-grad: radial-gradient(circle at 35% 30%, #7d9ff0, #2848b8 55%, #0c1a52 100%);
 }

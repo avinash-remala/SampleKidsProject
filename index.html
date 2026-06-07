@@ -4,103 +4,467 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Solar System Explorer</title>
-
-  <!-- Google Fonts: Bricolage Grotesque (headings) + Outfit (body text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- All styles live in styles.css -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Tiny star dots fixed behind everything (styled in CSS) -->
-  <div class="stars"></div>
+  <!--
+    HOW THIS PAGE WORKS — no JavaScript at all!
 
-  <!-- =====================================================
-       NAVIGATION BAR
-       The logo on the left takes you back to the Home view.
-       The planet buttons (filled in by script.js) are on the right.
-       ===================================================== -->
-  <nav>
-    <div class="logo" id="logo" title="Home">
-      <!-- Planet / orbit icon -->
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="3"/>
-        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-25 12 12)"/>
-      </svg>
-    </div>
-    <!-- script.js builds a button for each planet and puts it here -->
-    <div class="nav-links" id="navLinks"></div>
-  </nav>
+    1. There are hidden radio buttons at the top of this file.
+    2. Each planet name in the nav is a <label> linked to one radio.
+    3. Clicking a label "checks" that radio button (invisibly).
+    4. CSS in styles.css detects which radio is checked and:
+         • shows the matching planet page
+         • changes all the colors to match that planet
+         • highlights the active nav label
+  -->
 
-  <!-- =====================================================
-       MAIN CONTENT WRAPPER
-       The .page article inside is the big themed card that
-       script.js fills in when you pick a planet.
-       ===================================================== -->
-  <div class="wrap">
-    <article class="page">
+  <!-- Hidden radio buttons — one for each planet.
+       The "checked" on Earth means Earth shows when the page first loads. -->
+  <input type="radio" name="planet" id="r-home">
+  <input type="radio" name="planet" id="r-mercury">
+  <input type="radio" name="planet" id="r-venus">
+  <input type="radio" name="planet" id="r-earth" checked>
+  <input type="radio" name="planet" id="r-mars">
+  <input type="radio" name="planet" id="r-jupiter">
+  <input type="radio" name="planet" id="r-saturn">
+  <input type="radio" name="planet" id="r-uranus">
+  <input type="radio" name="planet" id="r-neptune">
 
-      <!-- ----- HERO ----- -->
-      <!-- Two-column section: title / button on the left, planet ball on the right -->
-      <section class="hero">
-        <div class="hero-copy">
-          <!-- Small pill label above the title, e.g. "THE BLUE PLANET" -->
-          <span class="badge" id="badge">THE BLUE PLANET</span>
+  <!-- Everything visible lives inside .app.
+       CSS uses the ~ selector to reach from the radio inputs above
+       into .app below — that's how the color themes work. -->
+  <div class="app">
 
-          <!-- Big planet name -->
-          <h1 id="name">EARTH</h1>
+    <div class="stars"></div>
 
-          <!-- One-line description -->
-          <p class="lede" id="lede">Our home. The only place we know of that's teeming with life.</p>
+    <nav>
+      <!-- The logo is a label for the Home radio — clicking it goes to the Home page -->
+      <label class="logo" for="r-home" title="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-25 12 12)"/>
+        </svg>
+      </label>
+      <!-- Each label's "for" must match the id of a radio button above -->
+      <div class="nav-links">
+        <label for="r-home">Home</label>
+        <label for="r-mercury">Mercury</label>
+        <label for="r-venus">Venus</label>
+        <label for="r-earth">Earth</label>
+        <label for="r-mars">Mars</label>
+        <label for="r-jupiter">Jupiter</label>
+        <label for="r-saturn">Saturn</label>
+        <label for="r-uranus">Uranus</label>
+        <label for="r-neptune">Neptune</label>
+      </div>
+    </nav>
 
-          <!-- Scrolls down to the stats section when clicked -->
-          <button class="btn" id="exploreBtn">Explore Earth <span>&rarr;</span></button>
-        </div>
+    <div class="wrap">
 
-        <!-- The glowing planet sphere (gradient + optional ring applied by JS) -->
-        <div class="planet-stage">
-          <div class="planet" id="planet"></div>
-        </div>
-      </section>
+      <!-- ===================== HOME ===================== -->
+      <article class="page" id="p-home">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">Explore the Solar System</span>
+            <h1>SOLAR SYSTEM</h1>
+            <p class="lede">A journey through the eight worlds orbiting our Sun. Pick a planet above to begin.</p>
+            <a class="btn" href="#s-home">Explore Planets <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-home">
+          <div class="stat"><div class="ico">☀️</div><div class="lbl">Star</div><div class="val">The Sun</div></div>
+          <div class="stat"><div class="ico">🪐</div><div class="lbl">Planets</div><div class="val">8</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Known Moons</div><div class="val">290+</div></div>
+          <div class="stat"><div class="ico">⏳</div><div class="lbl">System Age</div><div class="val">4.6B yrs</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Our solar system formed about 4.6 billion years ago from a giant cloud of gas and dust. Eight planets, dozens of moons, asteroids and comets all orbit a single star — the Sun. Choose any planet above to explore its world.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">☀️</div><h4>Inner Planets</h4><p>Mercury, Venus, Earth and Mars are rocky worlds.</p></div>
+            <div class="feat"><div class="fico">☁️</div><h4>Gas Giants</h4><p>Jupiter and Saturn are enormous balls of gas.</p></div>
+            <div class="feat"><div class="fico">🧊</div><h4>Ice Giants</h4><p>Uranus and Neptune are cold, distant ice giants.</p></div>
+            <div class="feat"><div class="fico">💍</div><h4>Rings &amp; Moons</h4><p>Many planets host rings and dozens of moons.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>The Sun makes up 99.8% of all the mass in the solar system.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
 
-      <!-- ----- STATS BAR ----- -->
-      <!-- Four key facts (diameter, moons, etc.) — filled in by script.js -->
-      <section class="stats" id="stats"></section>
+      <!-- ===================== MERCURY ===================== -->
+      <article class="page" id="p-mercury">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Swift Planet</span>
+            <h1>MERCURY</h1>
+            <p class="lede">The closest planet to the Sun and the fastest in its orbit.</p>
+            <a class="btn" href="#s-mercury">Explore Mercury <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-mercury">
+          <div class="stat"><div class="ico">🔄</div><div class="lbl">Orbital Period</div><div class="val">88 days</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">4,879 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">0</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">57.9M km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Mercury is the smallest planet in our solar system and the closest to the Sun. It has a rocky surface covered in craters, similar to our Moon.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">☀️</div><h4>Closest to the Sun</h4><p>Mercury is the closest planet to the Sun.</p></div>
+            <div class="feat"><div class="fico">🌡️</div><h4>Extreme Temperatures</h4><p>Daytime highs reach 430°C while nights drop to -180°C.</p></div>
+            <div class="feat"><div class="fico">🔄</div><h4>Fastest Orbit</h4><p>It orbits the Sun in just 88 Earth days.</p></div>
+            <div class="feat"><div class="fico">⭕</div><h4>Heavily Cratered</h4><p>Its surface is covered in impact craters.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>Mercury has a huge iron core that takes up about 85% of its radius.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
 
-      <!-- ----- OVERVIEW ----- -->
-      <!-- Short paragraph about the planet, plus a CSS terrain image -->
-      <section class="block">
-        <h3 class="block-title">Overview</h3>
-        <div class="overview">
-          <p id="overviewText"></p>
-          <div class="ov-img" id="ovImg"></div>
-        </div>
-      </section>
+      <!-- ===================== VENUS ===================== -->
+      <article class="page" id="p-venus">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Morning Star</span>
+            <h1>VENUS</h1>
+            <p class="lede">The hottest planet in our solar system.</p>
+            <a class="btn" href="#s-venus">Explore Venus <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-venus">
+          <div class="stat"><div class="ico">🌡️</div><div class="lbl">Surface Temp</div><div class="val">464 °C</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">12,104 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">0</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">108.2M km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Venus is the second planet from the Sun and is shrouded in thick clouds of sulfuric acid. It has a runaway greenhouse effect that makes it the hottest planet in our solar system.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">☁️</div><h4>Thick Atmosphere</h4><p>Its atmosphere is 96% carbon dioxide, trapping heat.</p></div>
+            <div class="feat"><div class="fico">🌡️</div><h4>Extreme Heat</h4><p>Surface temperatures are hot enough to melt lead.</p></div>
+            <div class="feat"><div class="fico">🌋</div><h4>Volcanic Activity</h4><p>Venus has more volcanoes than any other planet.</p></div>
+            <div class="feat"><div class="fico">⬆️</div><h4>High Pressure</h4><p>Atmospheric pressure is 92 times stronger than Earth's.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>A day on Venus is longer than a year on Venus.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
 
-      <!-- ----- FEATURES ----- -->
-      <!-- Four highlight cards, each with an icon, heading, and sentence -->
-      <section class="block">
-        <h3 class="block-title">Features</h3>
-        <div class="features" id="features"></div>
-      </section>
+      <!-- ===================== EARTH ===================== -->
+      <article class="page" id="p-earth">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Blue Planet</span>
+            <h1>EARTH</h1>
+            <p class="lede">Our home. The only place we know of that's teeming with life.</p>
+            <a class="btn" href="#s-earth">Explore Earth <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-earth">
+          <div class="stat"><div class="ico">👥</div><div class="lbl">Population</div><div class="val">8.1B</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">12,742 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">1</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">149.6M km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Earth is the third planet from the Sun and the only astronomical object known to harbor life. It has a diverse environment with liquid water, a protective atmosphere, and a moderate climate.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">💧</div><h4>Liquid Water</h4><p>Earth is the only planet known to have stable liquid water on its surface.</p></div>
+            <div class="feat"><div class="fico">🛡️</div><h4>Protective Atmosphere</h4><p>Our atmosphere protects us from harmful solar radiation.</p></div>
+            <div class="feat"><div class="fico">🌿</div><h4>Rich Biodiversity</h4><p>Home to millions of species of plants, animals, and microorganisms.</p></div>
+            <div class="feat"><div class="fico">🧲</div><h4>Magnetic Field</h4><p>Earth's magnetic field protects us from the solar wind and cosmic radiation.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>Earth is the only planet not named after a god or goddess in Greek or Roman mythology.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
 
-      <!-- ----- FUN FACT ----- -->
-      <!-- A single interesting fact with a mini planet icon -->
-      <section class="block">
-        <h3 class="block-title">Fun Fact</h3>
-        <div class="funfact">
-          <p id="funfact"></p>
-          <div class="mini-planet" id="miniPlanet"></div>
-        </div>
-      </section>
+      <!-- ===================== MARS ===================== -->
+      <article class="page" id="p-mars">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Red Planet</span>
+            <h1>MARS</h1>
+            <p class="lede">A cold, dusty desert world and the most explored planet beyond Earth.</p>
+            <a class="btn" href="#s-mars">Explore Mars <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-mars">
+          <div class="stat"><div class="ico">🌡️</div><div class="lbl">Surface Temp</div><div class="val">-63 °C</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">6,779 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">2</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">227.9M km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Mars is the fourth planet from the Sun, a dusty, cold desert world with a very thin atmosphere. Iron oxide on its surface gives it the famous red color, and signs suggest it was once far wetter.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">🌋</div><h4>Tallest Volcano</h4><p>Olympus Mons is the largest volcano in the solar system.</p></div>
+            <div class="feat"><div class="fico">🌙</div><h4>Two Moons</h4><p>Mars has two small moons, Phobos and Deimos.</p></div>
+            <div class="feat"><div class="fico">📏</div><h4>Vast Canyons</h4><p>Valles Marineris stretches over 4,000 km long.</p></div>
+            <div class="feat"><div class="fico">☁️</div><h4>Thin Atmosphere</h4><p>Its atmosphere is mostly carbon dioxide and very thin.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>A year on Mars lasts 687 Earth days — almost two Earth years.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
 
-    </article>
-  </div>
+      <!-- ===================== JUPITER ===================== -->
+      <article class="page" id="p-jupiter">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Giant</span>
+            <h1>JUPITER</h1>
+            <p class="lede">The largest planet in our solar system — a massive ball of gas.</p>
+            <a class="btn" href="#s-jupiter">Explore Jupiter <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-jupiter">
+          <div class="stat"><div class="ico">🌀</div><div class="lbl">Great Red Spot</div><div class="val">350+ yrs</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">139,820 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">95</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">778.5M km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Jupiter is the largest planet in the solar system, a gas giant more than twice as massive as all the other planets combined. It is famous for its swirling bands of clouds and the Great Red Spot.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">🌀</div><h4>Great Red Spot</h4><p>A giant storm larger than Earth, raging for centuries.</p></div>
+            <div class="feat"><div class="fico">🌙</div><h4>Dozens of Moons</h4><p>Jupiter has 95 known moons, including giant Ganymede.</p></div>
+            <div class="feat"><div class="fico">💨</div><h4>Fierce Winds</h4><p>Storm winds can exceed 600 km/h in its cloud bands.</p></div>
+            <div class="feat"><div class="fico">💍</div><h4>Faint Rings</h4><p>Jupiter has a thin, dusty ring system.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>Jupiter is so big that all the other planets could fit inside it.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
 
-  <!-- All the data and logic live in script.js -->
-  <script src="script.js"></script>
+      <!-- ===================== SATURN ===================== -->
+      <article class="page" id="p-saturn">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Ringed Planet</span>
+            <h1>SATURN</h1>
+            <p class="lede">Famous for its spectacular and complex system of icy rings.</p>
+            <a class="btn" href="#s-saturn">Explore Saturn <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <!-- "ringed" class adds the ring decoration in CSS -->
+            <div class="planet ringed"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-saturn">
+          <div class="stat"><div class="ico">💍</div><div class="lbl">Ring Span</div><div class="val">282,000 km</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">116,460 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">146</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">1.43B km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Saturn is the sixth planet from the Sun and the second largest. It is best known for its stunning rings, made of countless chunks of ice and rock orbiting the planet.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">💍</div><h4>Iconic Rings</h4><p>Made of billions of pieces of ice and rock.</p></div>
+            <div class="feat"><div class="fico">🌙</div><h4>Most Moons</h4><p>Saturn has 146 confirmed moons, the most of any planet.</p></div>
+            <div class="feat"><div class="fico">☁️</div><h4>Gas Giant</h4><p>Mostly hydrogen and helium with no solid surface.</p></div>
+            <div class="feat"><div class="fico">⚖️</div><h4>Low Density</h4><p>Saturn is light enough that it would float in water.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>Saturn's rings span thousands of kilometers but are only about 10 meters thick in places.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
+
+      <!-- ===================== URANUS ===================== -->
+      <article class="page" id="p-uranus">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Ice Giant</span>
+            <h1>URANUS</h1>
+            <p class="lede">A pale blue ice giant that rotates on its side.</p>
+            <a class="btn" href="#s-uranus">Explore Uranus <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet ringed"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-uranus">
+          <div class="stat"><div class="ico">🧊</div><div class="lbl">Surface Temp</div><div class="val">-224 °C</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">50,724 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">28</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">2.87B km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Uranus is the seventh planet from the Sun, an ice giant made largely of water, methane and ammonia. Methane gas gives it its pale cyan color, and it uniquely rotates on its side.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">🧊</div><h4>Coldest Planet</h4><p>It has the coldest atmosphere in the solar system.</p></div>
+            <div class="feat"><div class="fico">🔄</div><h4>Sideways Spin</h4><p>Uranus rotates on its side at a 98° tilt.</p></div>
+            <div class="feat"><div class="fico">☁️</div><h4>Methane Skies</h4><p>Methane gives Uranus its distinctive blue-green hue.</p></div>
+            <div class="feat"><div class="fico">💍</div><h4>Faint Rings</h4><p>It has 13 known dark, narrow rings.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>One season on Uranus lasts about 21 Earth years.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
+
+      <!-- ===================== NEPTUNE ===================== -->
+      <article class="page" id="p-neptune">
+        <section class="hero">
+          <div class="hero-copy">
+            <span class="badge">The Windy Planet</span>
+            <h1>NEPTUNE</h1>
+            <p class="lede">The most distant planet — a deep blue world of supersonic winds.</p>
+            <a class="btn" href="#s-neptune">Explore Neptune <span>→</span></a>
+          </div>
+          <div class="planet-stage">
+            <div class="planet"></div>
+          </div>
+        </section>
+        <section class="stats" id="s-neptune">
+          <div class="stat"><div class="ico">💨</div><div class="lbl">Wind Speed</div><div class="val">2,100 km/h</div></div>
+          <div class="stat"><div class="ico">📏</div><div class="lbl">Diameter</div><div class="val">49,244 km</div></div>
+          <div class="stat"><div class="ico">🌙</div><div class="lbl">Moons</div><div class="val">16</div></div>
+          <div class="stat"><div class="ico">📍</div><div class="lbl">Distance from Sun</div><div class="val">4.5B km</div></div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Overview</h3>
+          <div class="overview">
+            <p>Neptune is the eighth and most distant planet from the Sun. This dark, cold ice giant has the strongest winds in the solar system and a vivid blue color from methane in its atmosphere.</p>
+            <div class="ov-img"></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Features</h3>
+          <div class="features">
+            <div class="feat"><div class="fico">💨</div><h4>Fastest Winds</h4><p>Supersonic winds reach over 2,000 km/h.</p></div>
+            <div class="feat"><div class="fico">🌀</div><h4>Great Dark Spot</h4><p>Massive storm systems appear and vanish in its clouds.</p></div>
+            <div class="feat"><div class="fico">🧊</div><h4>Ice Giant</h4><p>Made of water, ammonia and methane ices.</p></div>
+            <div class="feat"><div class="fico">📍</div><h4>Most Distant</h4><p>It orbits about 4.5 billion km from the Sun.</p></div>
+          </div>
+        </section>
+        <section class="block">
+          <h3 class="block-title">Fun Fact</h3>
+          <div class="funfact">
+            <p>Neptune was the first planet found by mathematical prediction rather than direct observation.</p>
+            <div class="mini-planet"></div>
+          </div>
+        </section>
+      </article>
+
+    </div><!-- end .wrap -->
+  </div><!-- end .app -->
+
 </body>
 </html>
