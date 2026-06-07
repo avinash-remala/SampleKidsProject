@@ -1,0 +1,486 @@
+/* ============================================================
+   SOLAR SYSTEM EXPLORER  —  styles.css
+
+   This file controls how everything looks.
+   It is split into clearly labelled sections so you can jump
+   straight to the part you want to change.
+
+   Sections:
+     1.  CSS Variables  (color slots that update per planet)
+     2.  Reset & base
+     3.  Starfield background
+     4.  Navigation bar
+     5.  Page card (the big themed container)
+     6.  Hero (title, planet ball, explore button)
+     7.  Stats bar (four key facts)
+     8.  Content blocks (overview, features, fun fact)
+     9.  Reveal animation
+     10. Responsive (smaller screens)
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   1. CSS VARIABLES
+   These are like named color slots. JavaScript (script.js)
+   swaps them out every time you pick a different planet, and
+   every element that uses them updates automatically.
+   ------------------------------------------------------------ */
+:root {
+  --accent:      #5fa0ff;                       /* main highlight color          */
+  --accent-2:    #8bbcff;                       /* lighter version of accent     */
+  --accent-soft: rgba(95, 160, 255, .16);       /* very transparent accent       */
+  --hero:        #1d4ed8;                       /* bright zone color in the card */
+  --deep:        #0c1838;                       /* dark base color of the card   */
+  --stat-bg:     rgba(29, 78, 216, .40);        /* stats bar background          */
+  --planet-grad: radial-gradient(circle at 35% 30%, #7fb2ff, #1d4ed8 55%, #0a1f4d 100%);
+  --ring: 0;
+
+  --ink:   #f1f5ff;                             /* main text color (near white)  */
+  --muted: rgba(241, 245, 255, .66);            /* dimmer text color             */
+  --line:  rgba(255, 255, 255, .10);            /* subtle border color           */
+  --t:     .6s cubic-bezier(.4, 0, .2, 1);     /* standard transition duration  */
+}
+
+
+/* ------------------------------------------------------------
+   2. RESET & BASE STYLES
+   Removes default browser spacing and sets the page font.
+   ------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  /* Deep space gradient — stays fixed while you scroll */
+  background:
+    radial-gradient(1200px 820px at 50% -12%, #2b3548 0%, transparent 60%),
+    linear-gradient(160deg, #1b2233 0%, #12161f 52%, #090c12 100%);
+  background-attachment: fixed;
+}
+
+
+/* ------------------------------------------------------------
+   3. STARFIELD
+   A fixed layer of tiny dot "stars" behind everything.
+   pointer-events: none means you can still click through it.
+   ------------------------------------------------------------ */
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .55;
+  background-image:
+    radial-gradient(1px 1px at 18% 22%, rgba(255,255,255,.8), transparent),
+    radial-gradient(1px 1px at 62% 64%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1.6px 1.6px at 82% 18%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 38% 82%, rgba(255,255,255,.45), transparent),
+    radial-gradient(1px 1px at 90% 48%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1px 1px at 8% 58%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1.4px 1.4px at 50% 35%, rgba(255,255,255,.55), transparent);
+}
+
+/* Page content sits above the starfield */
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 30px 4vw 90px;
+}
+
+
+/* ------------------------------------------------------------
+   4. NAVIGATION BAR
+   Sticky at the top — blurs the content behind it.
+   ------------------------------------------------------------ */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 4vw;
+  backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgba(12,16,24,.9), rgba(12,16,24,.5));
+  border-bottom: 1px solid var(--line);
+}
+
+/* The planet-logo icon on the left side of the nav */
+.logo {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex: none;
+  margin-right: 14px;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 0 20px var(--accent-soft);
+  cursor: pointer;
+  transition: background var(--t);
+}
+.logo svg { width: 19px; height: 19px; }
+
+/* Row of planet-name buttons */
+.nav-links {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.nav-links button {
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: .2px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 8px;
+  position: relative;
+  transition: .22s;
+}
+
+.nav-links button:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, .06);
+}
+
+/* Active button gets a glowing accent underline */
+.nav-links button.active { color: #fff; }
+.nav-links button.active::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 1px;
+  height: 2.5px;
+  border-radius: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+
+/* ------------------------------------------------------------
+   5. PAGE CARD
+   The big rounded card that holds all the planet content.
+   Its background color (--deep) is set per planet by JS.
+   ------------------------------------------------------------ */
+.page {
+  margin-top: 30px;
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--deep);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 40px 90px -40px rgba(0, 0, 0, .8),
+    inset 0 0 0 1px rgba(255, 255, 255, .03);
+  transition: background var(--t);
+}
+
+
+/* ------------------------------------------------------------
+   6. HERO SECTION
+   Two-column layout: text on the left, floating planet on the right.
+   ------------------------------------------------------------ */
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  align-items: center;
+  gap: 26px;
+  padding: 54px clamp(22px, 4vw, 60px) 30px;
+
+  /* Bright themed gradient that fades into the dark card below */
+  background:
+    radial-gradient(820px 460px at 86% 4%, var(--hero), transparent 62%),
+    linear-gradient(172deg, var(--hero) 0%, var(--deep) 78%);
+  transition: background var(--t);
+}
+
+/* Subtle white sheen across the very top of the hero */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), transparent 30%);
+}
+
+.hero-copy { position: relative; z-index: 2; }
+
+/* Small rounded pill label above the title (e.g. "THE BLUE PLANET") */
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  color: #fff;
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 255, 255, .22);
+  backdrop-filter: blur(4px);
+}
+
+/* Big planet name — scales between 52px (mobile) and 96px (desktop) */
+h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: clamp(52px, 8.5vw, 96px);
+  line-height: .92;
+  letter-spacing: -1.5px;
+  color: #fff;
+  text-shadow: 0 6px 40px rgba(0,0,0,.45), 0 0 60px var(--accent-soft);
+}
+
+/* One-line description below the title */
+.lede {
+  font-size: 19px;
+  color: rgba(255, 255, 255, .86);
+  max-width: 360px;
+  margin: 18px 0 28px;
+  line-height: 1.5;
+}
+
+/* "Explore →" button */
+.btn {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border-radius: 12px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .4);
+  background: rgba(255, 255, 255, .12);
+  backdrop-filter: blur(6px);
+  transition: .24s;
+}
+.btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px var(--accent-soft);
+}
+.btn span       { transition: .24s; }
+.btn:hover span { transform: translateX(5px); } /* arrow slides right on hover */
+
+/* Container that centres the 3D-looking planet sphere */
+.planet-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  z-index: 2;
+}
+
+/* The planet ball */
+.planet {
+  width: 290px;
+  height: 290px;
+  border-radius: 50%;
+  background: var(--planet-grad);
+  position: relative;
+  /* Outer glow + inner shadow to look 3D */
+  box-shadow:
+    0 0 90px -10px var(--accent),
+    inset -34px -26px 70px rgba(0, 0, 0, .6);
+  animation: float 7s ease-in-out infinite;
+  transition: background var(--t);
+}
+
+/* Ring decoration for Saturn and Uranus (drawn with a ::before pseudo-element) */
+.planet.ringed::before {
+  content: "";
+  position: absolute;
+  inset: -50px -100px;
+  border-radius: 50%;
+  border: 16px solid rgba(255, 255, 255, .22);
+  transform: rotate(-22deg) scaleY(.3);
+  box-shadow: 0 0 36px rgba(255, 255, 255, .14);
+}
+
+/* Gentle up-and-down floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(-12px); }
+  50%       { transform: translateY( 12px); }
+}
+
+
+/* ------------------------------------------------------------
+   7. STATS BAR
+   Four key facts in a row, sitting just below the hero.
+   The negative top margin makes it slightly overlap the hero above.
+   ------------------------------------------------------------ */
+.stats {
+  position: relative;
+  z-index: 3;
+  margin: -6px 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--stat-bg);
+  border: 1px solid rgba(255, 255, 255, .16);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, .7);
+  backdrop-filter: blur(6px);
+  transition: background var(--t);
+}
+
+/* Each individual stat cell */
+.stat {
+  padding: 22px 16px;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, .14);
+}
+.stat:last-child { border-right: none; }
+
+.stat .ico     { width: 30px; height: 30px; margin: 0 auto 10px; color: #fff; opacity: .95; }
+.stat .ico svg { width: 100%; height: 100%; }
+.stat .lbl     { font-size: 11.5px; letter-spacing: .5px; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 6px; }
+.stat .val     { font-family: 'Bricolage Grotesque', sans-serif; font-size: 24px; font-weight: 700; color: #fff; }
+
+
+/* ------------------------------------------------------------
+   8. CONTENT BLOCKS (overview, features, fun fact)
+   Each is wrapped in a .block div inside the page card.
+   ------------------------------------------------------------ */
+.block            { padding: 34px clamp(22px, 4vw, 60px) 4px; }
+.block:last-child { padding-bottom: 46px; }
+
+/* Section heading like "OVERVIEW", "FEATURES", "FUN FACT" */
+.block-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 18px;
+}
+
+/* Overview: paragraph on the left, terrain image on the right */
+.overview   { display: grid; grid-template-columns: 1.35fr 1fr; gap: 30px; align-items: center; }
+.overview p { color: rgba(255,255,255,.78); font-size: 17px; line-height: 1.65; }
+
+/* Decorative "terrain" image — built entirely from CSS gradients */
+.ov-img {
+  height: 200px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  overflow: hidden;
+  background:
+    radial-gradient(70px 70px at 72% 30%, rgba(255,255,255,.9), var(--accent) 35%, transparent 70%),
+    linear-gradient(180deg, rgba(0,0,0,.25), transparent 38%),
+    linear-gradient(180deg, var(--hero) 0%, var(--hero) 52%, rgba(0,0,0,.45) 53%, var(--deep) 100%);
+  box-shadow: inset 0 -50px 70px rgba(0,0,0,.45);
+  transition: background var(--t);
+}
+
+/* Features: responsive grid of four cards */
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
+
+/* Each feature card */
+.feat .fico {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.feat .fico svg { width: 25px; height: 25px; }
+.feat h4 { font-size: 13.5px; letter-spacing: .4px; text-transform: uppercase; color: var(--accent-2); margin-bottom: 8px; line-height: 1.3; }
+.feat p  { font-size: 14px; color: rgba(255,255,255,.66); line-height: 1.5; }
+
+/* Fun fact box */
+.funfact {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 28px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 255, 255, .14);
+}
+.funfact p { flex: 1; font-size: 17px; color: rgba(255,255,255,.9); }
+
+/* Tiny planet ball inside the fun fact box */
+.mini-planet {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--planet-grad);
+  box-shadow: inset -10px -8px 22px rgba(0,0,0,.55), 0 0 24px var(--accent-soft);
+}
+
+
+/* ------------------------------------------------------------
+   9. REVEAL ANIMATION
+   Sections fade upwards into view when you switch planets.
+   JS adds the 'anim' class and staggers the delay per section.
+   ------------------------------------------------------------ */
+.anim {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: rise .6s cubic-bezier(.2, .7, .2, 1) forwards;
+}
+@keyframes rise {
+  to { opacity: 1; transform: none; }
+}
+
+
+/* ------------------------------------------------------------
+   10. RESPONSIVE — phones and small tablets (880px and below)
+   Layout shifts to a single column so everything still fits.
+   ------------------------------------------------------------ */
+@media (max-width: 880px) {
+  /* Stack hero sections vertically and center them */
+  .hero      { grid-template-columns: 1fr; padding: 40px 28px 24px; text-align: center; }
+  .hero-copy { display: flex; flex-direction: column; align-items: center; }
+
+  /* Planet appears above the text on mobile */
+  .planet-stage { order: -1; min-height: 230px; }
+  .planet       { width: 210px; height: 210px; }
+
+  /* Stats switch from 4 columns to a 2×2 grid */
+  .stats { grid-template-columns: repeat(2, 1fr); margin: -6px 20px 0; }
+  .stat:nth-child(2)                    { border-right: none; }
+  .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,.14); }
+
+  .block    { padding: 28px 26px 4px; }
+  .overview { grid-template-columns: 1fr; }           /* overview stacks vertically */
+  .features { grid-template-columns: repeat(2, 1fr); }
+
+  /* Nav scrolls sideways on small screens instead of wrapping */
+  .nav-links        { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  .nav-links button { white-space: nowrap; }
+}

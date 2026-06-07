@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar System Explorer</title>
+
+  <!-- Google Fonts: Bricolage Grotesque (headings) + Outfit (body text) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- All styles live in styles.css -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Tiny star dots fixed behind everything (styled in CSS) -->
+  <div class="stars"></div>
+
+  <!-- =====================================================
+       NAVIGATION BAR
+       The logo on the left takes you back to the Home view.
+       The planet buttons (filled in by script.js) are on the right.
+       ===================================================== -->
+  <nav>
+    <div class="logo" id="logo" title="Home">
+      <!-- Planet / orbit icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"/>
+        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-25 12 12)"/>
+      </svg>
+    </div>
+    <!-- script.js builds a button for each planet and puts it here -->
+    <div class="nav-links" id="navLinks"></div>
+  </nav>
+
+  <!-- =====================================================
+       MAIN CONTENT WRAPPER
+       The .page article inside is the big themed card that
+       script.js fills in when you pick a planet.
+       ===================================================== -->
+  <div class="wrap">
+    <article class="page">
+
+      <!-- ----- HERO ----- -->
+      <!-- Two-column section: title / button on the left, planet ball on the right -->
+      <section class="hero">
+        <div class="hero-copy">
+          <!-- Small pill label above the title, e.g. "THE BLUE PLANET" -->
+          <span class="badge" id="badge">THE BLUE PLANET</span>
+
+          <!-- Big planet name -->
+          <h1 id="name">EARTH</h1>
+
+          <!-- One-line description -->
+          <p class="lede" id="lede">Our home. The only place we know of that's teeming with life.</p>
+
+          <!-- Scrolls down to the stats section when clicked -->
+          <button class="btn" id="exploreBtn">Explore Earth <span>&rarr;</span></button>
+        </div>
+
+        <!-- The glowing planet sphere (gradient + optional ring applied by JS) -->
+        <div class="planet-stage">
+          <div class="planet" id="planet"></div>
+        </div>
+      </section>
+
+      <!-- ----- STATS BAR ----- -->
+      <!-- Four key facts (diameter, moons, etc.) — filled in by script.js -->
+      <section class="stats" id="stats"></section>
+
+      <!-- ----- OVERVIEW ----- -->
+      <!-- Short paragraph about the planet, plus a CSS terrain image -->
+      <section class="block">
+        <h3 class="block-title">Overview</h3>
+        <div class="overview">
+          <p id="overviewText"></p>
+          <div class="ov-img" id="ovImg"></div>
+        </div>
+      </section>
+
+      <!-- ----- FEATURES ----- -->
+      <!-- Four highlight cards, each with an icon, heading, and sentence -->
+      <section class="block">
+        <h3 class="block-title">Features</h3>
+        <div class="features" id="features"></div>
+      </section>
+
+      <!-- ----- FUN FACT ----- -->
+      <!-- A single interesting fact with a mini planet icon -->
+      <section class="block">
+        <h3 class="block-title">Fun Fact</h3>
+        <div class="funfact">
+          <p id="funfact"></p>
+          <div class="mini-planet" id="miniPlanet"></div>
+        </div>
+      </section>
+
+    </article>
+  </div>
+
+  <!-- All the data and logic live in script.js -->
+  <script src="script.js"></script>
+</body>
+</html>
